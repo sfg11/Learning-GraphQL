@@ -1,0 +1,37 @@
+# import Link, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload from "./generated/prisma.graphql"
+
+# this file contains the GraphQL schema which defines all the operations (queries, mutations, subscriptions) that i can send from my frontend app
+
+type Query {
+  feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
+}
+# Feed: retrieves all the links from the backend (this also query also allows for filter, sorting and pagination arguments)
+type Feed {
+  links: [Link!]!
+  count: Int!
+}
+
+# mutations: - post: allows authenticated users to create a new link - signup: create an account for new user - login: login an existing user -vote: allow authenticated users to vote for an existing link
+
+type Mutation {
+  post(url: String!, description: String!): Link!
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+  vote(linkId: ID!): Vote
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Subscription {
+  newLink: LinkSubscriptionPayload  # receive RT update when newlink created
+  newVote: VoteSubscriptionPayload # recieve RT update when a vote was submitted
+}
